@@ -1,0 +1,253 @@
+\documentclass[14pt,a4paper]{extarticle}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage[a4paper,left=30mm,right=15mm,top=20mm,bottom=20mm]{geometry}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\lstdefinestyle{sqlstyle}{
+    language=SQL,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{teal},
+    breaklines=true,
+    frame=single
+}
+
+\lstdefinestyle{pystyle}{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{teal},
+    breaklines=true,
+    frame=single
+}
+
+% ---- Данные для титульного листа (при необходимости меняй только здесь) ----
+\newcommand{\studentfullname}{Пудовкина Татьяна Евгеньевна}
+\newcommand{\studentgroup}{МО-\underline{\hspace{1.3cm}}}
+\newcommand{\studentcourse}{\underline{\hspace{1.3cm}}}
+\newcommand{\disciplinename}{SQL и получение данных}
+\newcommand{\reporttheme}{Лабораторные работы №1 и №2}
+\newcommand{\supervisorname}{Гулянов Руслан Гурамиевич}
+\newcommand{\supervisorpost}{ассистент}
+\newcommand{\directioncode}{02.03.03}
+\newcommand{\directionname}{Математическое обеспечение и администрирование информационных систем}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \textbf{Министерство науки и высшего образования Российской Федерации}\\
+        \textbf{ФГБОУ ВО «Омский государственный технический университет»}\\
+        \vspace{1.2cm}
+        Кафедра «Прикладная математика и фундаментальная информатика»\\
+        \vspace{1.5cm}
+        \textbf{\Large Лабораторная работа № 1, 2}\\
+        \vspace{0.8cm}
+    \end{center}
+
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+        по дисциплине & \disciplinename \\
+        на тему & \reporttheme \\
+    \end{tabularx}
+
+    \vspace{1.4cm}
+
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+        Студентка & \studentfullname \\
+    \end{tabularx}
+    {\footnotesize фамилия, имя, отчество полностью}
+
+    \vspace{0.7cm}
+
+    \begin{tabularx}{\textwidth}{@{}lXlX@{}}
+        Курс & \studentcourse & Группа & \studentgroup \\
+    \end{tabularx}
+
+    \vspace{0.7cm}
+
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+        Направление & \directioncode\ \directionname \\
+    \end{tabularx}
+    {\footnotesize код, наименование}
+
+    \vspace{0.9cm}
+
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+        Руководитель & \supervisorpost, \supervisorname \\
+    \end{tabularx}
+    {\footnotesize должность, ученая степень, звание; фамилия, инициалы}
+
+    \vfill
+
+    \begin{center}
+        Омск, \the\year
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section*{Введение}
+\addcontentsline{toc}{section}{Введение}
+В отчете представлены результаты выполнения первых двух лабораторных работ текущего года по дисциплине «SQL и получение данных»:
+\begin{enumerate}
+    \item ЛР1: Extract-Transform-Load (ETL).
+    \item ЛР2: Разработка DWH и витрины данных.
+\end{enumerate}
+
+\section{Лабораторная работа №1. ETL}
+
+\subsection{Цель работы}
+Реализовать ETL-процесс: генерация синтетических данных, загрузка в PostgreSQL в неструктурированном виде, очистка аномалий средствами SQL и загрузка в структурированную таблицу.
+
+\subsection{Постановка задачи}
+\begin{enumerate}
+    \item Сгенерировать синтетический датасет из 10 полей с намеренно добавленными аномалиями.
+    \item Загрузить данные в таблицу \texttt{s\_sql\_dds.t\_sql\_source\_unstructured}.
+    \item Реализовать SQL-функцию \texttt{fn\_etl\_data\_load(start\_date, end\_date)} для очистки и преобразования.
+    \item Получить целевую таблицу \texttt{s\_sql\_dds.t\_sql\_source\_structured}.
+    \item Реализовать верхнеуровневую функцию приложения \texttt{etl()} без входных параметров.
+\end{enumerate}
+
+\subsection{Структура проекта}
+Вставьте дерево проекта (или скрин) после выполнения:
+\begin{verbatim}
+data-pipeline/
+sql/
+\end{verbatim}
+
+\subsection{Описание реализации}
+\subsubsection{Созданные таблицы PostgreSQL}
+Кратко опишите назначение таблиц:
+\begin{itemize}
+    \item \texttt{t\_sql\_source\_unstructured} --- сырые данные (все поля VARCHAR).
+    \item \texttt{t\_sql\_source\_structured} --- очищенные данные в корректных типах.
+\end{itemize}
+
+\subsubsection{SQL-функция очистки}
+Вставьте код или ключевой фрагмент:
+\begin{lstlisting}[style=sqlstyle,caption={Фрагмент fn_etl_data_load}]
+-- вставить ваш SQL-код
+\end{lstlisting}
+
+\subsubsection{Код приложения}
+\begin{lstlisting}[style=pystyle,caption={Верхнеуровневая функция etl()}]
+# вставить/описать вызовы:
+# get_dataset()
+# load_data_to_db()
+# fill_structured_table()
+\end{lstlisting}
+
+\subsection{Проверка результатов}
+Заполните таблицу фактическими значениями:
+\begin{longtable}{|p{0.55\textwidth}|p{0.35\textwidth}|}
+\hline
+Проверка & Результат \\ \hline
+Количество строк в t\_sql\_source\_unstructured & \\ \hline
+Количество строк в t\_sql\_source\_structured & \\ \hline
+Минимальная/максимальная дата в целевой таблице & \\ \hline
+\end{longtable}
+
+\subsection{Вывод по ЛР1}
+Краткий вывод: что реализовано, какие аномалии обрабатываются, как подтверждена работоспособность.
+
+\newpage
+\section{Лабораторная работа №2. DWH и витрина данных}
+
+\subsection{Цель работы}
+Построить модель DWH (звезда/снежинка), загрузить таблицы-справочники, сформировать таблицу витрины, создать представление и реализовать перекладку данных в MySQL.
+
+\subsection{Постановка задачи}
+\begin{enumerate}
+    \item Создать таблицы-справочники с полями \texttt{id}, \texttt{name}.
+    \item Создать таблицу \texttt{t\_dm\_task} с ID справочников и фактами.
+    \item Реализовать функцию \texttt{fn\_dm\_data\_load(start\_dt, end\_dt)}.
+    \item Создать витрину \texttt{v\_dm\_task} с явным перечислением полей.
+    \item Создать таблицу в MySQL и выполнить перенос данных из PostgreSQL.
+\end{enumerate}
+
+\subsection{Схема данных}
+Вставьте ER-диаграмму (скрин из DBeaver/Draw.io/Figma):
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.95\textwidth]{images/dwh_schema.png}
+    \caption{Схема данных (звезда/снежинка)}
+\end{figure}
+
+\subsection{Описание реализации}
+\subsubsection{Справочники и факт}
+\begin{itemize}
+    \item \texttt{t\_dim\_customer}
+    \item \texttt{t\_dim\_city}
+    \item \texttt{t\_dim\_product\_category}
+    \item \texttt{t\_dim\_status}
+    \item \texttt{t\_dim\_source\_system}
+    \item \texttt{t\_dm\_task}
+\end{itemize}
+
+\subsubsection{Функция заполнения витрины}
+\begin{lstlisting}[style=sqlstyle,caption={Фрагмент fn_dm_data_load}]
+-- вставить ваш SQL-код
+\end{lstlisting}
+
+\subsubsection{Представление v_dm_task}
+\begin{lstlisting}[style=sqlstyle,caption={Создание v_dm_task}]
+-- перечислить поля явно, без SELECT *
+\end{lstlisting}
+
+\subsubsection{Перекладка данных в MySQL}
+\begin{lstlisting}[style=pystyle,caption={Функция переноса в MySQL}]
+# transfer_dm_to_mysql(...)
+\end{lstlisting}
+
+\subsection{Проверка результатов}
+\begin{longtable}{|p{0.55\textwidth}|p{0.35\textwidth}|}
+\hline
+Проверка & Результат \\ \hline
+Количество строк в PostgreSQL: v\_dm\_task & \\ \hline
+Количество строк в MySQL: t\_dm\_task & \\ \hline
+Корректность ключевых полей (ID, факт) & \\ \hline
+\end{longtable}
+
+\subsection{Вывод по ЛР2}
+Краткий вывод: какая схема построена, как формируется витрина, как подтвержден перенос в MySQL.
+
+\newpage
+\section*{Заключение}
+\addcontentsline{toc}{section}{Заключение}
+В ходе выполнения ЛР1 и ЛР2 реализован полный контур обработки данных:
+\begin{enumerate}
+    \item ETL в PostgreSQL с очисткой аномалий.
+    \item Формирование DWH-структуры и витрины данных.
+    \item Перекладка витрины в MySQL из приложения.
+\end{enumerate}
+
+\section*{Приложение А (опционально)}
+\addcontentsline{toc}{section}{Приложение А (опционально)}
+Сюда можно вынести полный SQL-код и длинные листинги Python.
+
+\end{document}
