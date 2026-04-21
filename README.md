@@ -1,4 +1,4 @@
-﻿# SQL labs 1-2 (current year)
+﻿# SQL labs 1-2
 
 Проект:
 - ЛР1: ETL
