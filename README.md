@@ -15,9 +15,8 @@
   - `etl()` — верхнеуровневая функция без параметров
 - SQL для PostgreSQL и MySQL
 
----
 
-## Рекомендуемый запуск (минимум установок)
+## Рекомендуемый запуск 
 
 Тебе нужно только:
 1. Docker Desktop
@@ -51,7 +50,6 @@ docker compose run --rm app --step all
 - формирование DWH/витрины
 - перенос витрины в MySQL
 
----
 
 ## Проверка в DBeaver
 
@@ -88,7 +86,6 @@ select count(*) from t_dm_task;
 select * from t_dm_task limit 20;
 ```
 
----
 
 ## Если нужно запускать шагами
 
@@ -98,7 +95,7 @@ docker compose run --rm app --step dm
 docker compose run --rm app --step transfer
 ```
 
----
+
 
 ## Важно про init-скрипты Docker
 
@@ -110,20 +107,5 @@ docker compose down -v
 docker compose up -d postgres mysql
 ```
 
----
 
-## Альтернатива без Docker (не рекомендуется)
 
-Можно запускать локально через Python и локальные БД, но это требует больше ручной настройки.
-
----
-
-## Файлы, которые важны для ЛР
-
-- Python: `data-pipeline/src/*.py`, `data-pipeline/main.py`
-- PostgreSQL SQL: `sql/dds/...`, `sql/dm/s_sql_dds/...`
-- MySQL SQL: `sql/dm/mysql/t_dm_task.sql`
-- Docker init:
-  - `docker/postgres/init/01_init_all.sql`
-  - `docker/mysql/init/01_init_mysql.sql`
-- Отчет: `report_template_lr1_lr2.tex`
