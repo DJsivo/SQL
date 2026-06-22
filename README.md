@@ -1,4 +1,4 @@
-﻿# SQL labs 1-2
+﻿# SQL ETL + DWH practice
 
 Проект:
 - ЛР1: ETL
